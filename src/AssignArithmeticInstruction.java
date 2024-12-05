@@ -6,7 +6,7 @@ public class AssignArithmeticInstruction extends Instruction {
     String src2;
     String op;
 
-    public AssignArithmeticInstruction(HashMap<String,String> memory, String dest, String src1, String src2, String op) {
+    public AssignArithmeticInstruction(HashMap<String,Integer> memory, String dest, String src1, String src2, String op) {
         super(memory);
         this.dest = dest;
         this.src1 = src1;
@@ -14,8 +14,8 @@ public class AssignArithmeticInstruction extends Instruction {
         this.op = op;
     }
     public void execute(){
-        int src1Value = Integer.parseInt(src1);
-        int src2Value = Integer.parseInt(src2);
+        int src1Value = sharedMemory.get(src1);
+        int src2Value = sharedMemory.get(src2);
         int result = 0;
         if (op.equals("+")) {
             result = src1Value + src2Value;
@@ -26,7 +26,7 @@ public class AssignArithmeticInstruction extends Instruction {
         } else if (op.equals("/")) {
             result = src1Value / src2Value;
         }
-        sharedMemory.put(dest, Integer.toString(result));
+        sharedMemory.put(dest, result);
     }
 
 }

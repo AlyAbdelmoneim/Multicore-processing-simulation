@@ -2,11 +2,11 @@ import java.util.HashMap;
 
 public class AssignInstruction extends Instruction {
     String dest;
-    String src;
-    public AssignInstruction(HashMap<String,String> memory, String dest, String src) {
+    int src;
+    public AssignInstruction(HashMap<String,Integer> memory, String dest, String src) {
         super(memory);
         this.dest = dest;
-        this.src = src;
+        this.src = Integer.parseInt(src);
     }
     public void execute() {
         sharedMemory.put(dest, src);

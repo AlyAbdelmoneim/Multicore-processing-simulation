@@ -6,7 +6,7 @@ public class Process {
     int pid;
     List<Instruction> instructions;
     PCB pcb;
-    HashMap<String, String> sharedMemory;
+    HashMap<String, Integer> sharedMemory;
 
     public Process(int pid, List<String> instructions) {
         this.pid = pid;

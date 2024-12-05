@@ -2,7 +2,7 @@ import java.util.HashMap;
 
 public class PrintInstruction extends Instruction {
     String src;
-    public PrintInstruction(HashMap<String, String> memory, String src) {
+    public PrintInstruction(HashMap<String, Integer> memory, String src) {
         super(memory);
         this.src = src;
     }
