@@ -1,17 +1,9 @@
-public class Instruction {
-    String type;
-    public Instruction(String type) {
-        this.type = type;
+import java.util.HashMap;
+
+public abstract class Instruction {
+    HashMap<String, String> sharedMemory;
+    public Instruction(HashMap<String, String> sharedMemory) {
+        this.sharedMemory = sharedMemory;
     }
-    void execute() {
-        if(type.equals("ASSIGN")) {
-            // Assign the value to the variable
-        } else if(type.equals("ARITHMETIC")) {
-            // Perform arithmetic operation
-        } else if(type.equals("PRINT")) {
-            // Print the value of the variable
-        } else {
-            throw new UnsupportedOperationException("Unknown instruction type!");
-        }
-    }
+    public abstract void execute();
 }
