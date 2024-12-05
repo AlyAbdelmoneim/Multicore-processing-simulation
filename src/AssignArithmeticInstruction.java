@@ -27,6 +27,7 @@ public class AssignArithmeticInstruction extends Instruction {
             result = src1Value / src2Value;
         }
         sharedMemory.put(dest, result);
+
     }
 
 }

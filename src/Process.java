@@ -8,9 +8,9 @@ public class Process {
     PCB pcb;
     HashMap<String, Integer> sharedMemory;
 
-    public Process(int pid, List<String> instructions) {
+    public Process(int pid, List<String> instructions, int base, int limit) {
         this.pid = pid;
-        this.pcb = new PCB(pid, 0, 0, 0, "ready");
+        this.pcb = new PCB(pid, 0, base, limit, "ready");
         this.instructions = fromStringToInstruction(instructions);
     }
     public List<Instruction> fromStringToInstruction(List<String> instructions) {
@@ -32,5 +32,19 @@ public class Process {
             }
         }
         return instructionList;
+    }
+    public boolean isDone() {
+        return pcb.state.equals("terminated");
+    }
+    public void execute(int numInstructions) {
+        for (int i = 0; i < numInstructions; i++) {
+            if (pcb.pc < instructions.size()) {
+                instructions.get(pcb.pc).execute();
+                pcb.pc++;
+            } else {
+                pcb.state = "terminated";
+                break;
+            }
+        }
     }
 }
