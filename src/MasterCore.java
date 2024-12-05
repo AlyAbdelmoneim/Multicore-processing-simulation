@@ -19,25 +19,51 @@ public class MasterCore {
         readyQueue.add(process);
     }
 
-    // Main scheduling loop
+    //OLD Main scheduling loop
+//    public void scheduleProcesses() {
+//        while (!allProcessesCompleted()) {
+//            Process nextProcess = selectNextProcess();
+//            if (nextProcess != null) {
+//                if (slave1.isIdle()) {
+//                    slave1.assignProcess(nextProcess);
+//                } else if (slave2.isIdle()) {
+//                    slave2.assignProcess(nextProcess);
+//                } else {
+//                    readyQueue.add(nextProcess);
+//                }
+//            }
+//            slave1.executeProcess(2);
+//            slave2.executeProcess(2);
+//        }
+//        System.out.println("All processes completed!");
+//        logProcessStates();
+//    }
+
     public void scheduleProcesses() {
         while (!allProcessesCompleted()) {
-            Process nextProcess = selectNextProcess();
-            if (nextProcess != null) {
-                if (slave1.isIdle()) {
+            // Check for idle slave cores and assign processes
+            if (slave1.isIdle() && !readyQueue.isEmpty()) {
+                Process nextProcess = selectNextProcess();
+                if (nextProcess != null) {
                     slave1.assignProcess(nextProcess);
-                } else if (slave2.isIdle()) {
-                    slave2.assignProcess(nextProcess);
-                } else {
-                    readyQueue.add(nextProcess);
                 }
             }
+            if (slave2.isIdle() && !readyQueue.isEmpty()) {
+                Process nextProcess = selectNextProcess();
+                if (nextProcess != null) {
+                    slave2.assignProcess(nextProcess);
+                }
+            }
+
+            // Execute processes on slave cores
             slave1.executeProcess(2);
             slave2.executeProcess(2);
         }
+
         System.out.println("All processes completed!");
         logProcessStates();
     }
+
 
     // Select the next process (default: FIFO)
     private Process selectNextProcess() {

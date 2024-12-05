@@ -17,10 +17,26 @@ public class SlaveCore {
         idle = false;
         //executeProcess(2);
     }
+
+    //OLD executeProcess method
+//    public void executeProcess(int quantum) {
+//        currentProcess.execute(quantum);
+//        if (currentProcess.isDone()) {
+//            idle = true;
+//        }
+//    }
+
     public void executeProcess(int quantum) {
-        currentProcess.execute(quantum);
-        if (currentProcess.isDone()) {
-            idle = true;
+        if (currentProcess != null) {
+            currentProcess.execute(quantum);
+            if (currentProcess.isDone()) {
+                masterCore.handleCompletedProcess(currentProcess);
+                idle = true;
+                currentProcess = null; // Clear the completed process
+            }
+        } else {
+            idle = true; // Ensure idle is true if no process is assigned
         }
     }
+
 }
