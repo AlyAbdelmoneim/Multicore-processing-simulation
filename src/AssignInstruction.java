@@ -2,13 +2,14 @@ import java.util.HashMap;
 
 public class AssignInstruction extends Instruction {
     String dest;
-    int src;
+    String src;
     public AssignInstruction(HashMap<String,Integer> memory, String dest, String src) {
         super(memory);
         this.dest = dest;
-        this.src = Integer.parseInt(src);
+        this.src = src;
+        System.out.println(sharedMemory == null ? "sharedMemory is null" : "sharedMemory is not null in assign");
     }
     public void execute() {
-        sharedMemory.put(dest, src);
+        sharedMemory.put(dest, sharedMemory.get(src));
     }
 }
