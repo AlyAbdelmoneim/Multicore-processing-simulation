@@ -7,12 +7,14 @@ public class MasterCore {
     SlaveCore slave2;
     Queue<Process> readyQueue;
     List<Process> completedProcesses;
+    Scheduler scheduler;
 
-    public MasterCore(Queue<Process> readyQueue) {
+    public MasterCore(Queue<Process> readyQueue, Scheduler scheduler) {
         this.readyQueue = readyQueue;
         slave1 = new SlaveCore(1, this);
         slave2 = new SlaveCore(2, this);
         completedProcesses = new ArrayList<>();
+        this.scheduler = scheduler;
     }
     public void addProcess(Process process) {
         process.pcb.state = "ready";
@@ -20,18 +22,17 @@ public class MasterCore {
     }
     public void scheduleProcesses() {
         while (!allProcessesCompleted()) {
+            System.out.println("The ready queue is: " + readyQueue);
             // Check for idle slave cores and assign processes
             if (slave1.isIdle() && !readyQueue.isEmpty()) {
-                Process nextProcess = selectNextProcess();
-                if (nextProcess != null) {
-                    slave1.assignProcess(nextProcess);
-                }
+                Process nextProcess = scheduler.selectNextProcess(readyQueue);
+                System.out.println("Slave core 1 is now executing process " + nextProcess.pid);
+                slave1.assignProcess(nextProcess);
             }
             if (slave2.isIdle() && !readyQueue.isEmpty()) {
-                Process nextProcess = selectNextProcess();
-                if (nextProcess != null) {
-                    slave2.assignProcess(nextProcess);
-                }
+                Process nextProcess = scheduler.selectNextProcess(readyQueue);
+                System.out.println("Slave core 2 is now executing process " + nextProcess.pid);
+                slave2.assignProcess(nextProcess);
             }
 
             // Execute processes on slave cores for a single quantum
@@ -56,12 +57,11 @@ public class MasterCore {
         logProcessStates();
     }
 
-
-
-    // Select the next process (default: FIFO)
-    private Process selectNextProcess() {
-        return readyQueue.poll();
-    }
+    //removed this method since it is now in the Scheduler interface
+//    // Select the next process (default: FIFO)
+//    private Process selectNextProcess() {
+//        return readyQueue.poll();
+//    }
 
     // Handle a preempted process (add it back to the ready queue)
     public void handlePreemptedProcess(Process process) {

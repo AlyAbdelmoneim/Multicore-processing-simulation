@@ -28,7 +28,8 @@ public class Main {
         Process process2 = new Process(1, instructions2, 100, 200, sharedMemory);
         Process process3 = new Process(2, instructions3, 200, 300, sharedMemory);
         Queue<Process> readyQueue = new LinkedList<>();
-        MasterCore master = new MasterCore(readyQueue);
+        Scheduler scheduler = new SJFScheduler();
+        MasterCore master = new MasterCore(readyQueue, scheduler);
         master.addProcess(process1);
         master.addProcess(process2);
         master.addProcess(process3);

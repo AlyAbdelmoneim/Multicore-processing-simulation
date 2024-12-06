@@ -58,6 +58,7 @@ public class Process {
     public void execute(int numInstructions) {
         pcb.state = "running";
         for (int i = 0; i < numInstructions; i++) {
+            System.out.println("Executing instruction " + pcb.pc + " for process " + pid);
             if (pcb.pc < instructions.size()) {
                 instructions.get(pcb.pc).execute();
                 pcb.pc++;
@@ -69,5 +70,17 @@ public class Process {
         if(pcb.state.equals("running")) {
             pcb.state = "ready";
         }
+        //print the memory
+        System.out.println("Memory:");
+        for (String key : sharedMemory.keySet()) {
+            System.out.println(key + " = " + sharedMemory.get(key));
+        }
     }
+    public int getRemainingInstructions() {
+        return instructions.size() - pcb.pc;
+    }
+    public String toString() {
+        return "Process " + pid + " with " + getRemainingInstructions() + " remaining instructions";
+    }
+
 }
