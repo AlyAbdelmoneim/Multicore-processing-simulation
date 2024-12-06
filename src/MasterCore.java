@@ -18,27 +18,6 @@ public class MasterCore {
         process.pcb.state = "ready";
         readyQueue.add(process);
     }
-
-    //OLD Main scheduling loop
-//    public void scheduleProcesses() {
-//        while (!allProcessesCompleted()) {
-//            Process nextProcess = selectNextProcess();
-//            if (nextProcess != null) {
-//                if (slave1.isIdle()) {
-//                    slave1.assignProcess(nextProcess);
-//                } else if (slave2.isIdle()) {
-//                    slave2.assignProcess(nextProcess);
-//                } else {
-//                    readyQueue.add(nextProcess);
-//                }
-//            }
-//            slave1.executeProcess(2);
-//            slave2.executeProcess(2);
-//        }
-//        System.out.println("All processes completed!");
-//        logProcessStates();
-//    }
-
     public void scheduleProcesses() {
         while (!allProcessesCompleted()) {
             // Check for idle slave cores and assign processes
@@ -55,14 +34,28 @@ public class MasterCore {
                 }
             }
 
-            // Execute processes on slave cores
-            slave1.executeProcess(2);
-            slave2.executeProcess(2);
+            // Execute processes on slave cores for a single quantum
+            if (!slave1.isIdle()) {
+                Process preemptedProcess = slave1.executeProcess(2); // Execute for quantum=2
+                if (preemptedProcess != null) {
+                    handlePreemptedProcess(preemptedProcess);
+                }
+                slave1.idle = true;
+            }
+
+            if (!slave2.isIdle()) {
+                Process preemptedProcess = slave2.executeProcess(2); // Execute for quantum=2
+                if (preemptedProcess != null) {
+                    handlePreemptedProcess(preemptedProcess);
+                }
+                slave2.idle = true;
+            }
         }
 
         System.out.println("All processes completed!");
         logProcessStates();
     }
+
 
 
     // Select the next process (default: FIFO)

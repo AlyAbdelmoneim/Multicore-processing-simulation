@@ -14,34 +14,8 @@ public class Process {
         this.pcb = new PCB(pid, 0, base, limit, "ready");
         this.instructions = fromStringToInstruction(instructions);
     }
-
-    //old method to convert string instructions to Instruction objects!!!!!!
-
-//    public List<Instruction> fromStringToInstruction(List<String> instructions) {
-//        List<Instruction> instructionList = new ArrayList<>();
-//        for (String instruction : instructions) {
-//            String[] parts = instruction.split(" ");
-//            if(parts[0].equals("assign")) {
-//                if(parts.length == 3) {
-//                    instructionList.add(new AssignInstruction(sharedMemory, parts[1], parts[2]));
-//                }else if(parts.length == 5) {
-//                    instructionList.add(new AssignArithmeticInstruction(sharedMemory, parts[1], parts[2], parts[3], parts[4]));
-//                }else {
-//                    System.out.println("Invalid assign instruction");
-//                }
-//            } else if(parts[0].equals("print")) {
-//                instructionList.add(new PrintInstruction(sharedMemory, parts[1]));
-//            } else {
-//                System.out.println("Invalid print instruction");
-//            }
-//        }
-//        return instructionList;
-//    }
-
-    //new method to convert string instructions to Instruction objects
     public List<Instruction> fromStringToInstruction(List<String> instructions) {
         List<Instruction> instructionList = new ArrayList<>();
-        System.out.println("instructions size is " + instructions.size());
         for (String instruction : instructions) {
             String[] parts = instruction.split(" ");
             if (parts[0].equals("assign")) {
@@ -58,14 +32,11 @@ public class Process {
             } else if (parts[0].equals("print")) {
                 instructionList.add(new PrintInstruction(sharedMemory, parts[1]));
             } else {
-                System.out.println("the invalid part is " + parts[0]);
                 System.out.println("Invalid instruction");
             }
         }
-        System.out.println("end of fromStringToInstruction");
         return instructionList;
     }
-
     // Helper method to convert keywords to operators
     private String convertKeywordToOperator(String keyword) {
         switch (keyword) {
@@ -81,16 +52,12 @@ public class Process {
                 throw new IllegalArgumentException("Unknown operation keyword: " + keyword);
         }
     }
-
-
-
     public boolean isDone() {
         return pcb.state.equals("terminated");
     }
     public void execute(int numInstructions) {
         pcb.state = "running";
         for (int i = 0; i < numInstructions; i++) {
-            System.out.println("Process " + pid + " is executing instruction " + pcb.pc);
             if (pcb.pc < instructions.size()) {
                 instructions.get(pcb.pc).execute();
                 pcb.pc++;
