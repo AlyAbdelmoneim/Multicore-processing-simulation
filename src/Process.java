@@ -13,7 +13,6 @@ public class Process {
         this.sharedMemory = sharedMemory;
         this.pcb = new PCB(pid, 0, base, limit, "ready");
         this.instructions = fromStringToInstruction(instructions);
-        System.out.println(sharedMemory == null ? "sharedMemory is null" : "sharedMemory is not null");
     }
 
     //old method to convert string instructions to Instruction objects!!!!!!
@@ -42,25 +41,28 @@ public class Process {
     //new method to convert string instructions to Instruction objects
     public List<Instruction> fromStringToInstruction(List<String> instructions) {
         List<Instruction> instructionList = new ArrayList<>();
+        System.out.println("instructions size is " + instructions.size());
         for (String instruction : instructions) {
             String[] parts = instruction.split(" ");
             if (parts[0].equals("assign")) {
                 if (parts.length == 3) {
                     // Handle simple assignment
                     instructionList.add(new AssignInstruction(sharedMemory, parts[1], parts[2]));
-                } else if (parts.length == 4) {
+                } else if (parts.length == 5) {
                     // Handle arithmetic operations with keywords (e.g., assign z add a b)
                     String operator = convertKeywordToOperator(parts[2]);
                     instructionList.add(new AssignArithmeticInstruction(sharedMemory, parts[1], parts[3], parts[4], operator));
                 } else {
-                    System.out.println("Invalid assign instruction");
+                    System.out.println("Invalid assign instruction in converting string to instruction");
                 }
             } else if (parts[0].equals("print")) {
                 instructionList.add(new PrintInstruction(sharedMemory, parts[1]));
             } else {
+                System.out.println("the invalid part is " + parts[0]);
                 System.out.println("Invalid instruction");
             }
         }
+        System.out.println("end of fromStringToInstruction");
         return instructionList;
     }
 
@@ -88,6 +90,7 @@ public class Process {
     public void execute(int numInstructions) {
         pcb.state = "running";
         for (int i = 0; i < numInstructions; i++) {
+            System.out.println("Process " + pid + " is executing instruction " + pcb.pc);
             if (pcb.pc < instructions.size()) {
                 instructions.get(pcb.pc).execute();
                 pcb.pc++;

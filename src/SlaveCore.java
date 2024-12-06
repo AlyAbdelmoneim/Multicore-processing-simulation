@@ -15,7 +15,6 @@ public class SlaveCore {
     public void assignProcess(Process process) {
         currentProcess = process;
         idle = false;
-        //executeProcess(2);
     }
 
     //OLD executeProcess method

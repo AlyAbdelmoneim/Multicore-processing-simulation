@@ -1,5 +1,5 @@
 import java.util.HashMap;
-
+import java.util.*;
 public class AssignInstruction extends Instruction {
     String dest;
     String src;
@@ -7,9 +7,11 @@ public class AssignInstruction extends Instruction {
         super(memory);
         this.dest = dest;
         this.src = src;
-        System.out.println(sharedMemory == null ? "sharedMemory is null" : "sharedMemory is not null in assign");
     }
     public void execute() {
-        sharedMemory.put(dest, sharedMemory.get(src));
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the value to assign to " + dest);
+        int value = sc.nextInt();
+        sharedMemory.put(dest, value);
     }
 }

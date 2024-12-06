@@ -10,7 +10,7 @@ public class ProcessReader {
         List<String> instructions = new ArrayList<>();
         try {
             String line = reader.readLine();
-            while (line != null) {
+            while (line != null && !line.isEmpty()) {
                 instructions.add(line);
                 line = reader.readLine();
             }

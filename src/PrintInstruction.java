@@ -7,6 +7,6 @@ public class PrintInstruction extends Instruction {
         this.src = src;
     }
     public void execute() {
-        System.out.println(sharedMemory.get(src));
+        System.out.println("printing " + src + " = " + sharedMemory.get(src));
     }
 }
