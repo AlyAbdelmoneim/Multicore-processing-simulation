@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
 
@@ -6,21 +7,27 @@ public class MasterCore {
     SlaveCore slave1;
     SlaveCore slave2;
     Queue<Process> readyQueue;
-    List<Process> completedProcesses;
+    HashMap<Process,Integer> completedProcesses;
     Scheduler scheduler;
+    int timeQuantum;
+    int cycle = 0;
 
     public MasterCore(Queue<Process> readyQueue, Scheduler scheduler) {
         this.readyQueue = readyQueue;
         slave1 = new SlaveCore(1, this);
         slave2 = new SlaveCore(2, this);
-        completedProcesses = new ArrayList<>();
+        completedProcesses = new HashMap<>();
         this.scheduler = scheduler;
+        timeQuantum = 2;
     }
     public void addProcess(Process process) {
         process.pcb.state = "ready";
         readyQueue.add(process);
     }
     public void scheduleProcesses() {
+        if (scheduler instanceof RRScheduler) {
+            timeQuantum = ((RRScheduler) scheduler).timeQuantum;
+        }
         while (!allProcessesCompleted()) {
             System.out.println("The ready queue is: " + readyQueue);
             // Check for idle slave cores and assign processes
@@ -37,7 +44,7 @@ public class MasterCore {
 
             // Execute processes on slave cores for a single quantum
             if (!slave1.isIdle()) {
-                Process preemptedProcess = slave1.executeProcess(2); // Execute for quantum=2
+                Process preemptedProcess = slave1.executeProcess(timeQuantum);
                 if (preemptedProcess != null) {
                     handlePreemptedProcess(preemptedProcess);
                 }
@@ -45,23 +52,18 @@ public class MasterCore {
             }
 
             if (!slave2.isIdle()) {
-                Process preemptedProcess = slave2.executeProcess(2); // Execute for quantum=2
+                Process preemptedProcess = slave2.executeProcess(timeQuantum);
                 if (preemptedProcess != null) {
                     handlePreemptedProcess(preemptedProcess);
                 }
                 slave2.idle = true;
             }
+            cycle += timeQuantum;
         }
 
         System.out.println("All processes completed!");
         logProcessStates();
     }
-
-    //removed this method since it is now in the Scheduler interface
-//    // Select the next process (default: FIFO)
-//    private Process selectNextProcess() {
-//        return readyQueue.poll();
-//    }
 
     // Handle a preempted process (add it back to the ready queue)
     public void handlePreemptedProcess(Process process) {
@@ -72,7 +74,7 @@ public class MasterCore {
     // Handle a completed process
     public void handleCompletedProcess(Process process) {
         process.pcb.state = "terminated";
-        completedProcesses.add(process);
+        completedProcesses.put(process, cycle + process.pcb.pc % timeQuantum);
     }
 
     // Check if all processes are completed
@@ -83,8 +85,8 @@ public class MasterCore {
     // Log the state of all processes (for debugging)
     private void logProcessStates() {
         System.out.println("Completed Processes:");
-        for (Process process : completedProcesses) {
-            System.out.println("Process " + process.pid + ": " + process.pcb.state);
+        for (Process process : completedProcesses.keySet()) {
+            System.out.println("Process " + process.pid + " completed at cycle " + completedProcesses.get(process));
         }
     }
 }

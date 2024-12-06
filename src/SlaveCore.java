@@ -20,7 +20,7 @@ public class SlaveCore {
         if (currentProcess != null) {
             currentProcess.execute(quantum);
             if (currentProcess.isDone()) {
-                masterCore.handleCompletedProcess(currentProcess);
+                masterCore.handleCompletedProcess(currentProcess );
                 idle = true;
                 currentProcess = null; // Clear the completed process
             }
