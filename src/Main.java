@@ -10,7 +10,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         List<String> instructions2 = new LinkedList<>();
         try {
             instructions2 = reader.readFile("src/ProcessesFiles/program_2.txt");
